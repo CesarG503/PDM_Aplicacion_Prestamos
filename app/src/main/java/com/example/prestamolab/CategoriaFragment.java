@@ -68,7 +68,7 @@ public class CategoriaFragment extends Fragment {
             } catch (Exception e) {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
-                        Toast.makeText(getContext(), "Error: La categoría podría estar en uso", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Error: La categoría esta en uso", Toast.LENGTH_LONG).show();
                     });
                 }
             }

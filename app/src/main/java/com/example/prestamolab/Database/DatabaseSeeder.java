@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import com.example.prestamolab.entitys.Articulo;
 import com.example.prestamolab.entitys.Categoria;
 import com.example.prestamolab.entitys.Personas;
+import com.example.prestamolab.entitys.Prestamo;
 
 public class DatabaseSeeder {
     private static final String PREFS_NAME = "AppPrefs";
@@ -37,6 +38,21 @@ public class DatabaseSeeder {
             db.articuloDao().insertar(new Articulo("Calculadora", "Calculadora científica", 3));
             db.articuloDao().insertar(new Articulo("Libro de Java", "Guía completa de Java", 2));
             db.articuloDao().insertar(new Articulo("Pelota de Fútbol", "Marca Wilson", 4));
+
+            Prestamo activo = new Prestamo(1, 1, "2023-10-01", "2023-10-15");
+            activo.devuelto = false;
+            db.prestamoDao().insertar(activo);
+
+            Articulo a1 = db.articuloDao().obtenerPorId(1);
+            if (a1 != null) {
+                a1.prestado = true;
+                db.articuloDao().actualizar(a1);
+            }
+
+            Prestamo historial = new Prestamo(2, 2, "2023-09-01", "2023-09-10");
+            historial.devuelto = true;
+            db.prestamoDao().insertar(historial);
+
         });
     }
 }
