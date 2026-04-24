@@ -5,13 +5,17 @@
     <item
         android:id="@+id/home"
         android:icon="@drawable/home"
-        android:title="Item" />
+        android:title="Home" />
     <item
         android:id="@+id/articulo"
         android:icon="@drawable/articulo"
-        android:title="Item" />
+        android:title="Articulo" />
     <item
         android:id="@+id/categoria"
         android:icon="@drawable/home"
-        android:title="Item" />
+        android:title="Categoria" />
+    <item
+        android:id="@+id/persona"
+        android:icon="@drawable/persona"
+        android:title="Usuario" />
 </menu>

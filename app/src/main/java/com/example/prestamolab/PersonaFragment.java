@@ -11,35 +11,35 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.prestamolab.Database.appDataBase;
-import com.example.prestamolab.entitys.Articulo;
+import com.example.prestamolab.entitys.Personas;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArticuloFragment extends Fragment {
+public class PersonaFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private ArticuloAdapter adapter;
-    private List<Articulo> articuloList = new ArrayList<>();
+    private PersonasAdapter adapter;
+    private List<Personas> personasList = new ArrayList<>();
     private appDataBase db;
 
-    public ArticuloFragment() {}
+    public PersonaFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_articulo, container, false);
+        View view = inflater.inflate(R.layout.fragment_persona, container, false);
         
-        recyclerView = view.findViewById(R.id.recycleArticulo);
-        FloatingActionButton btnInsertar = view.findViewById(R.id.btnInsertar);
+        recyclerView = view.findViewById(R.id.rvPersonas);
+        FloatingActionButton fabAdd = view.findViewById(R.id.fabAddPersona);
 
         db = appDataBase.getINSTANCE(getContext());
         
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ArticuloAdapter(articuloList);
+        adapter = new PersonasAdapter(personasList);
         recyclerView.setAdapter(adapter);
 
-        btnInsertar.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), InsertArticuloActivity.class));
+        fabAdd.setOnClickListener(v -> {
+            startActivity(new Intent(getActivity(), InsertPersonaActivity.class));
         });
 
         return view;
@@ -48,17 +48,19 @@ public class ArticuloFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadArticulos();
+        loadPersonas();
     }
 
-    private void loadArticulos() {
+    private void loadPersonas() {
         appDataBase.databaseWriteExecutor.execute(() -> {
-            List<Articulo> list = db.articuloDao().obtenerTodos();
-            getActivity().runOnUiThread(() -> {
-                articuloList.clear();
-                articuloList.addAll(list);
-                adapter.notifyDataSetChanged();
-            });
+            List<Personas> list = db.personasDao().obtenerTodos();
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    personasList.clear();
+                    personasList.addAll(list);
+                    adapter.notifyDataSetChanged();
+                });
+            }
         });
     }
 }

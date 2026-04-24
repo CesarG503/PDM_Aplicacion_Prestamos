@@ -27,4 +27,7 @@ public interface DAOArticulo {
 
     @Query("SELECT * FROM Articulo WHERE id = :id")
     Articulo obtenerPorId(int id);
+
+    @Query("SELECT * FROM Articulo WHERE prestado = 0")
+    List<Articulo> obtenerDisponibles();
 }

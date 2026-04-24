@@ -1,64 +1,91 @@
 package com.example.prestamolab;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.prestamolab.Database.appDataBase;
+import com.example.prestamolab.entitys.Categoria;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CategoriaFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class CategoriaFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView recyclerView;
+    private CategoriaAdapter adapter;
+    private List<Categoria> categoriaList = new ArrayList<>();
+    private appDataBase db;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    public CategoriaFragment() {}
 
-    public CategoriaFragment() {
-        // Required empty public constructor
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_categoria, container, false);
+
+        recyclerView = view.findViewById(R.id.rvCategorias);
+        FloatingActionButton fabAdd = view.findViewById(R.id.fabAddCategoria);
+
+        db = appDataBase.getINSTANCE(getContext());
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new CategoriaAdapter(categoriaList);
+        recyclerView.setAdapter(adapter);
+
+        fabAdd.setOnClickListener(v -> showAddCategoryDialog());
+
+        return view;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CategoriaFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CategoriaFragment newInstance(String param1, String param2) {
-        CategoriaFragment fragment = new CategoriaFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    private void showAddCategoryDialog() {
+        EditText input = new EditText(getContext());
+        input.setHint("Nombre de la categoría");
+        
+        new AlertDialog.Builder(getContext())
+                .setTitle("Nueva Categoría")
+                .setView(input)
+                .setPositiveButton("Guardar", (dialog, which) -> {
+                    String name = input.getText().toString().trim();
+                    if (!name.isEmpty()) {
+                        saveCategoria(name);
+                    }
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void saveCategoria(String nombre) {
+        appDataBase.databaseWriteExecutor.execute(() -> {
+            db.categoriaDao().insertar(new Categoria(nombre));
+            getActivity().runOnUiThread(() -> {
+                Toast.makeText(getContext(), "Categoría guardada", Toast.LENGTH_SHORT).show();
+                loadCategorias();
+            });
+        });
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public void onResume() {
+        super.onResume();
+        loadCategorias();
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_categoria, container, false);
+    private void loadCategorias() {
+        appDataBase.databaseWriteExecutor.execute(() -> {
+            List<Categoria> list = db.categoriaDao().obtenerTodos();
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    categoriaList.clear();
+                    categoriaList.addAll(list);
+                    adapter.notifyDataSetChanged();
+                });
+            }
+        });
     }
 }

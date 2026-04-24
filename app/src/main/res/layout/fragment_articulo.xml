@@ -12,8 +12,8 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycleArticulo"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="429dp"
+            android:layout_height="214dp"
             android:layout_marginTop="55dp"
             android:layout_marginBottom="359dp"
             app:layout_constraintBottom_toTopOf="@+id/btnInsertar"
