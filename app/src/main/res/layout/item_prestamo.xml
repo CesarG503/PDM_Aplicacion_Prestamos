@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#D1E4E9"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/ivStatusIcon"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:padding="8dp"
+            android:background="@drawable/ic_launcher_background"
+            android:backgroundTint="#F0F7F8"
+            android:src="@android:drawable/ic_dialog_info"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#006878" />
+
+        <TextView
+            android:id="@+id/tvArticulo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="#171D1E"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/btnReturn"
+            app:layout_constraintStart_toEndOf="@+id/ivStatusIcon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Cámara Canon" />
+
+        <TextView
+            android:id="@+id/tvPersona"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="#4B6268"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/btnReturn"
+            app:layout_constraintStart_toStartOf="@+id/tvArticulo"
+            app:layout_constraintTop_toBottomOf="@id/tvArticulo"
+            tools:text="Prestado a: Juan Pérez" />
+
+        <TextView
+            android:id="@+id/tvFechas"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textSize="12sp"
+            android:textColor="#8E9EA2"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toStartOf="@+id/btnReturn"
+            app:layout_constraintStart_toStartOf="@+id/tvArticulo"
+            app:layout_constraintTop_toBottomOf="@id/tvPersona"
+            tools:text="01/01/2023 - 05/01/2023" />
+
+        <ImageButton
+            android:id="@+id/btnReturn"
+            android:layout_width="36dp"
+            android:layout_height="39dp"
+            android:background="@drawable/bg_button_return"
+            android:contentDescription="Marcar devolución"
+            android:elevation="4dp"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_return_check"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#FFFFFF" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

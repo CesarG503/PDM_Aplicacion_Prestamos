@@ -1,11 +1,14 @@
 package com.example.prestamolab;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.prestamolab.Database.appDataBase;
@@ -14,8 +17,11 @@ import com.example.prestamolab.entitys.Personas;
 import com.example.prestamolab.entitys.Prestamo;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class InsertPrestamoActivity extends AppCompatActivity {
 
@@ -25,11 +31,18 @@ public class InsertPrestamoActivity extends AppCompatActivity {
     private appDataBase db;
     private List<Articulo> articulosDisponibles = new ArrayList<>();
     private List<Personas> personasList = new ArrayList<>();
+    private final Calendar calendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_prestamo);
+
+        // Habilitar flecha de retroceso
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Nuevo Préstamo");
+        }
 
         db = appDataBase.getINSTANCE(this);
 
@@ -39,9 +52,38 @@ public class InsertPrestamoActivity extends AppCompatActivity {
         etFechaDevolucion = findViewById(R.id.etFechaDevolucion);
         btnGuardar = findViewById(R.id.btnGuardarPrestamo);
 
+        // Desactivar teclado para los campos de fecha
+        etFechaPrestamo.setFocusable(false);
+        etFechaPrestamo.setClickable(true);
+        etFechaDevolucion.setFocusable(false);
+        etFechaDevolucion.setClickable(true);
+
+        etFechaPrestamo.setOnClickListener(v -> showDatePicker(etFechaPrestamo));
+        etFechaDevolucion.setOnClickListener(v -> showDatePicker(etFechaDevolucion));
+
         loadSpinners();
 
         btnGuardar.setOnClickListener(v -> savePrestamo());
+    }
+
+    private void showDatePicker(TextInputEditText editText) {
+        new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            editText.setText(sdf.format(calendar.getTime()));
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // Volver atrás
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadSpinners() {
