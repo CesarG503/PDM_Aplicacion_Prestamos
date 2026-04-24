@@ -48,7 +48,7 @@ public abstract class appDataBase extends RoomDatabase {
                             appDataBase.class,
                             "db_prestamos"
                     )
-                    .fallbackToDestructiveMigration() // Simpler for development, but consider migrations for production
+                    .fallbackToDestructiveMigration()
                     .build();
                 }
             }
