@@ -1,5 +1,6 @@
 package com.example.prestamolab;
 
+import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ public class CategoriaAdapter extends RecyclerView.Adapter<CategoriaAdapter.Cate
 
     public interface OnCategoriaClickListener {
         void onEditClick(Categoria categoria);
+        void onDeleteClick(Categoria categoria);
     }
 
     public CategoriaAdapter(List<Categoria> categorias, OnCategoriaClickListener listener) {
@@ -35,10 +37,21 @@ public class CategoriaAdapter extends RecyclerView.Adapter<CategoriaAdapter.Cate
     public void onBindViewHolder(@NonNull CategoriaViewHolder holder, int position) {
         Categoria categoria = categorias.get(position);
         holder.text1.setText(categoria.nombre_categoria);
-        holder.text2.setVisibility(View.GONE); // No secondary text for categories
+        holder.text2.setVisibility(View.GONE);
 
         holder.btnEdit.setOnClickListener(v -> {
             if (listener != null) listener.onEditClick(categoria);
+        });
+
+        holder.btnDelete.setOnClickListener(v -> {
+            new AlertDialog.Builder(v.getContext())
+                    .setTitle("Eliminar Categoría")
+                    .setMessage("¿Estás seguro de eliminar esta categoría?")
+                    .setPositiveButton("Eliminar", (dialog, which) -> {
+                        if (listener != null) listener.onDeleteClick(categoria);
+                    })
+                    .setNegativeButton("Cancelar", null)
+                    .show();
         });
     }
 
@@ -49,12 +62,13 @@ public class CategoriaAdapter extends RecyclerView.Adapter<CategoriaAdapter.Cate
 
     static class CategoriaViewHolder extends RecyclerView.ViewHolder {
         TextView text1, text2;
-        ImageButton btnEdit;
+        ImageButton btnEdit, btnDelete;
         CategoriaViewHolder(View itemView) {
             super(itemView);
             text1 = itemView.findViewById(R.id.text_main);
             text2 = itemView.findViewById(R.id.text_secondary);
             btnEdit = itemView.findViewById(R.id.btnEditItem);
+            btnDelete = itemView.findViewById(R.id.btnDeleteItem);
         }
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -35,7 +36,9 @@ public class PersonaFragment extends Fragment {
         db = appDataBase.getINSTANCE(getContext());
         
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new PersonasAdapter(personasList);
+        adapter = new PersonasAdapter(personasList, persona -> {
+            eliminarPersona(persona);
+        });
         recyclerView.setAdapter(adapter);
 
         fabAdd.setOnClickListener(v -> {
@@ -43,6 +46,26 @@ public class PersonaFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void eliminarPersona(Personas persona) {
+        appDataBase.databaseWriteExecutor.execute(() -> {
+            try {
+                db.personasDao().eliminar(persona);
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getContext(), "Persona eliminada", Toast.LENGTH_SHORT).show();
+                        loadPersonas();
+                    });
+                }
+            } catch (Exception e) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getContext(), "Error: La persona podría tener préstamos activos", Toast.LENGTH_LONG).show();
+                    });
+                }
+            }
+        });
     }
 
     @Override

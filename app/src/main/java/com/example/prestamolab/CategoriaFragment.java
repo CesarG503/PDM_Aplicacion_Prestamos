@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +34,17 @@ public class CategoriaFragment extends Fragment {
         db = appDataBase.getINSTANCE(getContext());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new CategoriaAdapter(categoriaList, this::openEditCategoryActivity);
+        adapter = new CategoriaAdapter(categoriaList, new CategoriaAdapter.OnCategoriaClickListener() {
+            @Override
+            public void onEditClick(Categoria categoria) {
+                openEditCategoryActivity(categoria);
+            }
+
+            @Override
+            public void onDeleteClick(Categoria categoria) {
+                eliminarCategoria(categoria);
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         fabAdd.setOnClickListener(v -> {
@@ -42,6 +53,26 @@ public class CategoriaFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void eliminarCategoria(Categoria categoria) {
+        appDataBase.databaseWriteExecutor.execute(() -> {
+            try {
+                db.categoriaDao().eliminar(categoria);
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getContext(), "Categoría eliminada", Toast.LENGTH_SHORT).show();
+                        loadCategorias();
+                    });
+                }
+            } catch (Exception e) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getContext(), "Error: La categoría podría estar en uso", Toast.LENGTH_LONG).show();
+                    });
+                }
+            }
+        });
     }
 
     private void openEditCategoryActivity(Categoria categoria) {

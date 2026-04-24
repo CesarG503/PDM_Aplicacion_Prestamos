@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -35,7 +36,11 @@ public class ArticuloFragment extends Fragment {
         db = appDataBase.getINSTANCE(getContext());
         
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ArticuloAdapter(articuloList);
+        
+        adapter = new ArticuloAdapter(articuloList, articulo -> {
+            eliminarArticulo(articulo);
+        });
+        
         recyclerView.setAdapter(adapter);
 
         btnInsertar.setOnClickListener(v -> {
@@ -43,6 +48,22 @@ public class ArticuloFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void eliminarArticulo(Articulo articulo) {
+        appDataBase.databaseWriteExecutor.execute(() -> {
+            try {
+                db.articuloDao().eliminar(articulo);
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "Artículo eliminado", Toast.LENGTH_SHORT).show();
+                    loadArticulos();
+                });
+            } catch (Exception e) {
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "No se puede eliminar: el artículo está en uso", Toast.LENGTH_LONG).show();
+                });
+            }
+        });
     }
 
     @Override
@@ -54,11 +75,13 @@ public class ArticuloFragment extends Fragment {
     private void loadArticulos() {
         appDataBase.databaseWriteExecutor.execute(() -> {
             List<Articulo> list = db.articuloDao().obtenerTodos();
-            getActivity().runOnUiThread(() -> {
-                articuloList.clear();
-                articuloList.addAll(list);
-                adapter.notifyDataSetChanged();
-            });
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    articuloList.clear();
+                    articuloList.addAll(list);
+                    adapter.notifyDataSetChanged();
+                });
+            }
         });
     }
 }

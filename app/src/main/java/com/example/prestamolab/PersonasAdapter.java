@@ -1,5 +1,6 @@
 package com.example.prestamolab;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +15,15 @@ import java.util.List;
 public class PersonasAdapter extends RecyclerView.Adapter<PersonasAdapter.PersonaViewHolder> {
 
     private List<Personas> personasList;
+    private OnPersonaDeleteListener deleteListener;
 
-    public PersonasAdapter(List<Personas> personasList) {
+    public interface OnPersonaDeleteListener {
+        void onDelete(Personas persona);
+    }
+
+    public PersonasAdapter(List<Personas> personasList, OnPersonaDeleteListener deleteListener) {
         this.personasList = personasList;
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
@@ -37,6 +44,19 @@ public class PersonasAdapter extends RecyclerView.Adapter<PersonasAdapter.Person
             intent.putExtra("id", persona.id);
             v.getContext().startActivity(intent);
         });
+
+        holder.btnDelete.setOnClickListener(v -> {
+            new AlertDialog.Builder(v.getContext())
+                    .setTitle("Eliminar Persona")
+                    .setMessage("¿Estás seguro de que deseas eliminar a esta persona?")
+                    .setPositiveButton("Eliminar", (dialog, which) -> {
+                        if (deleteListener != null) {
+                            deleteListener.onDelete(persona);
+                        }
+                    })
+                    .setNegativeButton("Cancelar", null)
+                    .show();
+        });
     }
 
     @Override
@@ -46,12 +66,13 @@ public class PersonasAdapter extends RecyclerView.Adapter<PersonasAdapter.Person
 
     static class PersonaViewHolder extends RecyclerView.ViewHolder {
         TextView text1, text2;
-        ImageButton btnEdit;
+        ImageButton btnEdit, btnDelete;
         PersonaViewHolder(View itemView) {
             super(itemView);
             text1 = itemView.findViewById(R.id.text_main);
             text2 = itemView.findViewById(R.id.text_secondary);
             btnEdit = itemView.findViewById(R.id.btnEditItem);
+            btnDelete = itemView.findViewById(R.id.btnDeleteItem);
         }
     }
 }
