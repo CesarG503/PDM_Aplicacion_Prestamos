@@ -12,7 +12,7 @@
         android:title="Articulo" />
     <item
         android:id="@+id/categoria"
-        android:icon="@drawable/home"
+        android:icon="@drawable/categoria"
         android:title="Categoria" />
     <item
         android:id="@+id/persona"

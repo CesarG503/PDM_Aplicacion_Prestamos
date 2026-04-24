@@ -2,9 +2,12 @@ package com.example.prestamolab.Database;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.prestamolab.DAO.DAOArticulo;
 import com.example.prestamolab.DAO.DAOCategoria;
@@ -29,6 +32,12 @@ public abstract class appDataBase extends RoomDatabase {
     private static volatile appDataBase INSTANCE;
 
     public static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(4);
+
+    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+        }
+    };
 
     public static appDataBase getINSTANCE(Context context){
         if(INSTANCE == null){
