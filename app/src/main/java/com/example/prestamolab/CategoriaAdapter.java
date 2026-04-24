@@ -3,6 +3,7 @@ package com.example.prestamolab;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,21 +13,33 @@ import java.util.List;
 public class CategoriaAdapter extends RecyclerView.Adapter<CategoriaAdapter.CategoriaViewHolder> {
 
     private List<Categoria> categorias;
+    private OnCategoriaClickListener listener;
 
-    public CategoriaAdapter(List<Categoria> categorias) {
+    public interface OnCategoriaClickListener {
+        void onEditClick(Categoria categoria);
+    }
+
+    public CategoriaAdapter(List<Categoria> categorias, OnCategoriaClickListener listener) {
         this.categorias = categorias;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public CategoriaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row_with_edit, parent, false);
         return new CategoriaViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CategoriaViewHolder holder, int position) {
-        holder.text1.setText(categorias.get(position).nombre_categoria);
+        Categoria categoria = categorias.get(position);
+        holder.text1.setText(categoria.nombre_categoria);
+        holder.text2.setVisibility(View.GONE); // No secondary text for categories
+
+        holder.btnEdit.setOnClickListener(v -> {
+            if (listener != null) listener.onEditClick(categoria);
+        });
     }
 
     @Override
@@ -35,10 +48,13 @@ public class CategoriaAdapter extends RecyclerView.Adapter<CategoriaAdapter.Cate
     }
 
     static class CategoriaViewHolder extends RecyclerView.ViewHolder {
-        TextView text1;
+        TextView text1, text2;
+        ImageButton btnEdit;
         CategoriaViewHolder(View itemView) {
             super(itemView);
-            text1 = itemView.findViewById(android.R.id.text1);
+            text1 = itemView.findViewById(R.id.text_main);
+            text2 = itemView.findViewById(R.id.text_secondary);
+            btnEdit = itemView.findViewById(R.id.btnEditItem);
         }
     }
 }

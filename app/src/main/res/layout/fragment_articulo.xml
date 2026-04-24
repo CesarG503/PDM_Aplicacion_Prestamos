@@ -12,14 +12,10 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycleArticulo"
-            android:layout_width="429dp"
-            android:layout_height="214dp"
-            android:layout_marginTop="55dp"
-            android:layout_marginBottom="359dp"
-            app:layout_constraintBottom_toTopOf="@+id/btnInsertar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="-9dp"
+            tools:layout_editor_absoluteY="74dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnInsertar"

@@ -1,12 +1,10 @@
 package com.example.prestamolab;
 
-import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,39 +33,21 @@ public class CategoriaFragment extends Fragment {
         db = appDataBase.getINSTANCE(getContext());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new CategoriaAdapter(categoriaList);
+        adapter = new CategoriaAdapter(categoriaList, this::openEditCategoryActivity);
         recyclerView.setAdapter(adapter);
 
-        fabAdd.setOnClickListener(v -> showAddCategoryDialog());
+        fabAdd.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), InsertCategoriaActivity.class);
+            startActivity(intent);
+        });
 
         return view;
     }
 
-    private void showAddCategoryDialog() {
-        EditText input = new EditText(getContext());
-        input.setHint("Nombre de la categoría");
-        
-        new AlertDialog.Builder(getContext())
-                .setTitle("Nueva Categoría")
-                .setView(input)
-                .setPositiveButton("Guardar", (dialog, which) -> {
-                    String name = input.getText().toString().trim();
-                    if (!name.isEmpty()) {
-                        saveCategoria(name);
-                    }
-                })
-                .setNegativeButton("Cancelar", null)
-                .show();
-    }
-
-    private void saveCategoria(String nombre) {
-        appDataBase.databaseWriteExecutor.execute(() -> {
-            db.categoriaDao().insertar(new Categoria(nombre));
-            getActivity().runOnUiThread(() -> {
-                Toast.makeText(getContext(), "Categoría guardada", Toast.LENGTH_SHORT).show();
-                loadCategorias();
-            });
-        });
+    private void openEditCategoryActivity(Categoria categoria) {
+        Intent intent = new Intent(getActivity(), InsertCategoriaActivity.class);
+        intent.putExtra("id", categoria.id);
+        startActivity(intent);
     }
 
     @Override

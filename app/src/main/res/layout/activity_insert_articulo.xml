@@ -7,6 +7,14 @@
     android:padding="16dp"
     tools:context=".InsertArticuloActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarArticulo"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="Gestión de Artículo" />
+
     <TextView
         android:id="@+id/tvTitleArticulo"
         android:layout_width="wrap_content"
@@ -14,10 +22,10 @@
         android:text="Registrar Artículo"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarArticulo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp"/>
+        android:layout_marginTop="16dp"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilNombreArticulo"
@@ -71,11 +79,22 @@
 
     <Button
         android:id="@+id/btnGuardarArticulo"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Guardar"
         app:layout_constraintTop_toBottomOf="@id/spCategoria"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnCancelarArticulo"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Cancelar"
+        app:layout_constraintTop_toBottomOf="@id/btnGuardarArticulo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

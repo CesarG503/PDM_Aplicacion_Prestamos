@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.prestamolab.Database.appDataBase;
 import com.example.prestamolab.entitys.Personas;
@@ -14,7 +15,7 @@ import com.google.android.material.textfield.TextInputEditText;
 public class InsertPersonaActivity extends AppCompatActivity {
 
     private TextInputEditText etNombre, etContacto;
-    private Button btnGuardar, btnEliminar;
+    private Button btnGuardar, btnEliminar, btnCancelar;
     private appDataBase db;
     private int personaId = -1;
 
@@ -23,12 +24,20 @@ public class InsertPersonaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_persona);
 
+        Toolbar toolbar = findViewById(R.id.toolbarPersona);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        toolbar.setNavigationOnClickListener(v -> finish());
+
         db = appDataBase.getINSTANCE(this);
 
         etNombre = findViewById(R.id.etNombre);
         etContacto = findViewById(R.id.etContacto);
         btnGuardar = findViewById(R.id.btnGuardar);
         btnEliminar = findViewById(R.id.btnEliminar);
+        btnCancelar = findViewById(R.id.btnCancelar);
 
         if (getIntent().hasExtra("id")) {
             personaId = getIntent().getIntExtra("id", -1);
@@ -37,6 +46,7 @@ public class InsertPersonaActivity extends AppCompatActivity {
         }
 
         btnGuardar.setOnClickListener(v -> savePersona());
+        btnCancelar.setOnClickListener(v -> finish());
         btnEliminar.setOnClickListener(v -> deletePersona());
     }
 
